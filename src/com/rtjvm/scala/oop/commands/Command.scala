@@ -12,6 +12,7 @@ object Command {
   val MKDIR = "mkdir"
   val LS = "ls"
   val PWD = "pwd"
+  val CD = "cd"
 
   def emptyCommand: Command = new Command {
     override def apply(state: State): State = state.setMessage("")
@@ -33,6 +34,9 @@ object Command {
       new Ls
     } else if (PWD.equals(tokens(0))) {
       new Pwd
+    } else if (CD.equals(tokens(0))) {
+      if (tokens.length < 2) incompleteCommand(MKDIR)
+      else new Cd(tokens(1))
     }
     else new UnknownCommand
   }
