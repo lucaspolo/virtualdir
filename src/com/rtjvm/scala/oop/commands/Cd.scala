@@ -17,11 +17,26 @@ class Cd(dir: String) extends Command {
         else findEntryHelper(nextDir.asDirectory, path.tail)
       }
 
+    @tailrec
+    def collapseRelativeTokens(path: List[String], result: List[String]): List[String] = {
+      if (path.isEmpty) result
+      else if (".".equals(path.head)) collapseRelativeTokens(path.tail, result)
+      else if ("..".equals(path.head)) {
+        if (result.isEmpty) null
+        else collapseRelativeTokens(path.tail, result.init)
+      } else collapseRelativeTokens(path.tail, result :+ path.head)
+    }
+
     // 1. Tokens
     val tokens: List[String] = path.substring(1).split(Directory.SEPARATOR).toList
 
+    // 1.5 Eliminate/Collapse relative tokens
+
+    val newTokens = collapseRelativeTokens(tokens, List())
+
     // 2. Navigate to the correct entry
-    findEntryHelper(root, tokens)
+    if (newTokens == null) null
+    else findEntryHelper(root, newTokens)
   }
 
   override def apply(state: State): State = {
