@@ -2,7 +2,7 @@ package com.rtjvm.scala.oop.files
 
 import com.rtjvm.scala.oop.filesystem.FileSystemException
 
-class File(override val parentPath: String, override val name: String, contents:String) extends DirEntry(parentPath, name) {
+class File(override val parentPath: String, override val name: String, val contents:String) extends DirEntry(parentPath, name) {
   def setContents(newContents: String): File = {
     new File(parentPath, name, newContents)
   }
